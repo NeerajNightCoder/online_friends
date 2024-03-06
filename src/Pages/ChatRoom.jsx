@@ -1,78 +1,64 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
-import io from "socket.io-client";
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useSocket } from "../context/SocketContext";
 
 const ChatRoom = () => {
-  const [socket, setSocket] = useState(null);
   const [message, setMessage] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
+  const socket = useSocket();
+  const location = useLocation();
+  const tag = new URLSearchParams(location.search).get("tag");
+  const [matched, setMatched] = useState(false);
   const [room, setRoom] = useState("");
-  const [activeUsersCount, setActiveUsersCount] = useState();
-
-  const { search } = useLocation();
-  const searchParams = new URLSearchParams(search);
-  const tag = searchParams.get("tag");
-
-  const socketRef = useRef();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    socketRef.current = socket;
-  }, [socket]);
+    if (socket) {
+      socket.on("message", (msg) => {
+        console.log(msg);
+        setChatMessages((prevMessages) => [...prevMessages, msg]);
+      });
 
-  useEffect(() => {
-    const newSocket = io("http://localhost:5000");
-
-    newSocket.on("connect", () => {
-      console.log("Connected to server", newSocket);
-      setSocket(newSocket);
-      newSocket.emit("setTag", tag);
-    });
-    newSocket.on("activeUsersCount", (data) => {
-      activeUsersCount(data);
-      console.log(`activeUsersCount ${data}`);
-    });
-    newSocket.on("matched", (data) => {
-      setRoom(data.room);
-      console.log(`Matched with room ${data}`);
-    });
-
-    newSocket.on("message", (msg) => {
-      console.log(socketRef.current, msg, msg.sender === socketRef.current.id);
-
-      setChatMessages((prevMessages) => [...prevMessages, msg]);
-    });
-
-    return () => {
-      newSocket.disconnect();
-    };
-  }, []);
-
-  const handleSetTag = () => {
-    if (socket && tag) {
-      console.log(`Tag ${tag} set`);
+      socket.on("userLeft", (data) => {
+        setMatched(false);
+        console.log(`User ${data} left`);
+        navigate("/");
+      });
+      socket.on("matched", (data) => {
+        setMatched(true);
+        setRoom(data.room);
+        console.log(`Matched with room ${data}`);
+      });
     }
-  };
+    return () => {
+      if (socket) {
+        socket.off("message");
+      }
+    };
+  }, [socket]);
 
   const handleSendMessage = () => {
     if (socket && message) {
-      socket.emit("sendMessage", { roomName: room, message });
+      socket.emit("sendMessage", { message, room });
       setMessage("");
     }
   };
 
+  const getMatchText = () => {
+    if (!matched) return "Waiting for someone to connect";
+    if (!tag) return "No tags applied, chatting with random user";
+    else return "Chatting with random user about " + tag;
+  };
+
   return (
     <div className="max-w-md mx-auto mt-8 p-4 bg-white rounded-lg shadow-lg">
-      <h1 className="text-2xl font-bold mb-4">Chat Room</h1>
-
-      {room && <p className="mt-4">You are matched in room: {room}</p>}
+      <p>{getMatchText()}</p>
       <div className="mb-4">
         {chatMessages.map((msg, index) => (
           <div
             key={index}
             className={`${
-              msg.sender === socketRef.current.id
-                ? "bg-cyan-50 "
-                : "bg-gray-50 "
+              msg.sender === socket.id ? "bg-cyan-50 " : "bg-gray-50 "
             }px-3 py-2 mb-2 rounded-lg`}
           >
             {msg.message}
