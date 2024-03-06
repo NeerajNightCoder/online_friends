@@ -7,6 +7,7 @@ import LoginPage from "./Pages/HomePage";
 import io from "socket.io-client";
 function App() {
   const [activeUsersCount, setActiveUsersCount] = useState();
+  const [genderCount, setGenderCount] = useState();
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
@@ -16,6 +17,10 @@ function App() {
     newSocket.on("activeUsersCount", (data) => {
       setActiveUsersCount(data);
       console.log(`activeUsersCount ${data}`);
+    });
+    newSocket.on("genderCount", (data) => {
+      setGenderCount(data);
+      console.log(` gender count ${data}`);
     });
 
     // Disconnect socket when component unmounts
@@ -33,6 +38,8 @@ function App() {
           Omelge
           <span className=" text-sky-700  text-lg mx-10">
             Online:{activeUsersCount}
+            Male:{genderCount?.maleUsers}
+            Female:{genderCount?.femaleUsers}
           </span>
         </h1>
         <SocketProvider socket={socket}>

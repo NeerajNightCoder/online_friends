@@ -4,6 +4,7 @@ import { useSocket } from "../context/SocketContext";
 
 const LoginPage = () => {
   const [tag, setTag] = useState("");
+  const [gender, setGender] = useState("");
   const socket = useSocket();
   const navigate = useNavigate();
 
@@ -11,10 +12,14 @@ const LoginPage = () => {
     setTag(e.target.value);
   };
 
+  const handleGenderChange = (e) => {
+    setGender(e.target.value);
+  };
+
   const handleStartChat = () => {
     console.log(socket);
     if (socket) {
-      socket.emit("setTag", tag || "notag");
+      socket.emit("setTag", { tag: tag || "notag", gender });
       console.log("Tag:", tag);
       navigate(`/chat?tag=${tag}`);
     }
@@ -31,6 +36,19 @@ const LoginPage = () => {
           onChange={handleTagChange}
           className="w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
         />
+      </div>
+      <div className="mb-4">
+        <select
+          id="gender"
+          value={gender}
+          onChange={handleGenderChange}
+          className="w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+        >
+          <option value="">Select Gender</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other</option>
+        </select>
       </div>
       <div className="flex justify-center">
         <button
