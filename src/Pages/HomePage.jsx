@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSocket } from "../context/SocketContext";
 
 const LoginPage = () => {
   const [tag, setTag] = useState("");
   const [gender, setGender] = useState("");
-  const socket = useSocket();
+  const [matchWithGender, setmatchWithGender] = useState("");
+  const { socket, setSocket } = useSocket();
   const navigate = useNavigate();
 
   const handleTagChange = (e) => {
@@ -15,13 +16,20 @@ const LoginPage = () => {
   const handleGenderChange = (e) => {
     setGender(e.target.value);
   };
+  const handlematchWithGenderChange = (e) => {
+    setmatchWithGender(e.target.value);
+  };
 
   const handleStartChat = () => {
     console.log(socket);
     if (socket) {
-      socket.emit("setTag", { tag: tag || "notag", gender });
+      console.log("socket already there");
+      socket.connect();
+      socket.emit("setTag", { tag: tag || "notag", gender, matchWithGender });
       console.log("Tag:", tag);
-      navigate(`/chat?tag=${tag}`);
+      navigate(
+        `/chat?tag=${tag}&gender=${gender}&matchWithGender=${matchWithGender}`
+      );
     }
   };
 
@@ -45,6 +53,17 @@ const LoginPage = () => {
           className="w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
         >
           <option value="">Select Gender</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other</option>
+        </select>
+        <select
+          id="matchWithGender"
+          value={matchWithGender}
+          onChange={handlematchWithGenderChange}
+          className="w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+        >
+          <option value="">Find Gender</option>
           <option value="male">Male</option>
           <option value="female">Female</option>
           <option value="other">Other</option>

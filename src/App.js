@@ -24,9 +24,9 @@ function App() {
     });
 
     // Disconnect socket when component unmounts
-    return () => {
-      newSocket.disconnect();
-    };
+    // return () => {
+    //   newSocket.disconnect();
+    // };
   }, []); // Empty dependency array ensures the effect runs only once
 
   console.log("app rendering");
@@ -36,13 +36,16 @@ function App() {
       <div className="App bg-slate-400 h-screen p-1 flex flex-col">
         <h1 className="text-4xl font-bold text-center my-5">
           Omelge
-          <span className=" text-sky-700  text-lg mx-10">
-            Online:{activeUsersCount}
-            Male:{genderCount?.maleUsers}
-            Female:{genderCount?.femaleUsers}
+          <span className="text-sky-700 text-lg mx-10">
+            <span className="font-semibold">Online:</span> {activeUsersCount}
+            &nbsp;|&nbsp;
+            <span className="font-semibold text-blue-600">Male:</span>
+            {genderCount?.maleUsers} &nbsp;|&nbsp;
+            <span className="font-semibold text-pink-600">Female:</span>
+            {genderCount?.femaleUsers}
           </span>
         </h1>
-        <SocketProvider socket={socket}>
+        <SocketProvider socket={socket} setSocket={setSocket}>
           <Routes>
             <Route path="/chat" element={<ChatRoom />} />
             <Route path="/" element={<LoginPage />} />

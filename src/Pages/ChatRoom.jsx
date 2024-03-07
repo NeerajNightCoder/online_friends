@@ -5,10 +5,12 @@ import { useSocket } from "../context/SocketContext";
 const ChatRoom = () => {
   const [message, setMessage] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
-  const socket = useSocket();
+  const { socket } = useSocket();
   const location = useLocation();
   const tag = new URLSearchParams(location.search).get("tag");
+  const gender = new URLSearchParams(location.search).get("gender");
   const [matched, setMatched] = useState(false);
+  const [userDisconnected, setUserDisconnected] = useState(false);
   const [room, setRoom] = useState("");
   const navigate = useNavigate();
 
@@ -19,14 +21,14 @@ const ChatRoom = () => {
         setChatMessages((prevMessages) => [...prevMessages, msg]);
       });
 
-      socket.on("userLeft", (data) => {
+      socket.on("userLeft", () => {
         setMatched(false);
-        console.log(`User ${data} left`);
-        navigate("/");
+        setUserDisconnected(true);
       });
       socket.on("matched", (data) => {
         setMatched(true);
         setRoom(data.room);
+        setUserDisconnected(false);
         console.log(`Matched with room ${data}`);
       });
     }
@@ -38,21 +40,53 @@ const ChatRoom = () => {
   }, [socket]);
 
   const handleSendMessage = () => {
-    if (socket && message) {
+    if (socket && message && !userDisconnected) {
       socket.emit("sendMessage", { message, room });
       setMessage("");
     }
   };
 
+  const handleDisconnect = () => {
+    if (socket) {
+      socket.disconnect();
+      navigate("/");
+    }
+  };
+
   const getMatchText = () => {
+    if (userDisconnected) return "";
     if (!matched) return "Waiting for someone to connect";
     if (!tag) return "No tags applied, chatting with random user";
-    else return "Chatting with random user about " + tag;
+    return `Chatting with random user about ${tag}`;
+  };
+
+  const handleFindNewUser = () => {
+    if (socket) {
+      setUserDisconnected(false);
+      socket.emit("setTag", { tag: tag || "notag", gender });
+    }
   };
 
   return (
     <div className="max-w-md mx-auto mt-8 p-4 bg-white rounded-lg shadow-lg">
-      <p>{getMatchText()}</p>
+      <div className="flex justify-between mb-4">
+        <p>{getMatchText()}</p>
+        {userDisconnected ? (
+          <button
+            onClick={handleFindNewUser}
+            className="bg-blue-500 p-3  rounded-lg"
+          >
+            Find Another User
+          </button>
+        ) : (
+          <button
+            onClick={handleDisconnect}
+            className="px-4 py-2 bg-red-500 text-white rounded-lg focus:outline-none"
+          >
+            Disconnect
+          </button>
+        )}
+      </div>
       <div className="mb-4">
         {chatMessages.map((msg, index) => (
           <div
@@ -65,6 +99,7 @@ const ChatRoom = () => {
           </div>
         ))}
       </div>
+      {userDisconnected && <h1>User Disconnected</h1>}
       <div className="flex">
         <input
           type="text"

@@ -1,14 +1,15 @@
 import React, { createContext, useContext } from "react";
 
-// Create a context for the socket
 const SocketContext = createContext();
 
-// Custom hook to access the socket context
-export const useSocket = () => useContext(SocketContext);
+export const useSocket = () => {
+  return useContext(SocketContext);
+};
 
-// SocketProvider component
-export const SocketProvider = ({ socket, children }) => {
+export const SocketProvider = ({ socket, setSocket, children }) => {
   return (
-    <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
+    <SocketContext.Provider value={{ socket, setSocket }}>
+      {children}
+    </SocketContext.Provider>
   );
 };
