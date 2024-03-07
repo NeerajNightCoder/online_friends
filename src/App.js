@@ -5,6 +5,9 @@ import ChatRoom from "./Pages/ChatRoom";
 import LoginPage from "./Pages/HomePage";
 
 import io from "socket.io-client";
+import CreateChatRoom from "./Pages/CreateRoom";
+import ChatGroup from "./Pages/ChatGroup";
+import ChatRoomPage from "./Pages/GroupChatPage";
 function App() {
   const [activeUsersCount, setActiveUsersCount] = useState();
   const [genderCount, setGenderCount] = useState();
@@ -48,7 +51,10 @@ function App() {
         <SocketProvider socket={socket} setSocket={setSocket}>
           <Routes>
             <Route path="/chat" element={<ChatRoom />} />
-            <Route path="/" element={<LoginPage />} />
+            {/* <Route path="/" element={<LoginPage />} /> */}
+            <Route path="/create-room" element={<CreateChatRoom />} />
+            <Route path="/" element={<ChatGroup />} />
+            <Route path="/chat-room/:roomId" element={<ChatRoomPage />} />
           </Routes>
         </SocketProvider>
       </div>
