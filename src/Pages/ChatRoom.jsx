@@ -95,7 +95,7 @@ const ChatRoom = () => {
             onClick={handleFindNewUser}
             className="bg-orange-500 p-3  rounded-lg mx-1 text-white"
           >
-            New <i class="fal fa-redo"></i>
+            New <i className="fal fa-redo"></i>
           </button>
         ) : (
           <button

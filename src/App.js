@@ -45,9 +45,9 @@ function App() {
           Friends Online
         </h1>
         <div className="flex justify-center items-center text-3xl absolute right-5 top-0">
-            <span className=" text-blue-500"><i class="fad fa-male  text-blue-500"></i>
+            <span className=" text-blue-500"><i className="fad fa-male  text-blue-500"></i>
             <span className=" mx-3 mr-5">{genderCount?.maleUsers|0}</span></span>
-            <span className=" text-pink-500"><i class="fad fa-female "></i>
+            <span className=" text-pink-500"><i className="fad fa-female "></i>
             <span className="ml-3 ">{genderCount?.femaleUsers|0}</span></span>
           </div>
         <SocketProvider socket={socket} setSocket={setSocket}>
