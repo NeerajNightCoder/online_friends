@@ -6,7 +6,7 @@ import HelloDummy from "../Hello";
 describe("HelloDummy Component", () => {
   it("renders 'Hello Dummy'", () => {
     render(<HelloDummy />);
-    const helloElement = screen.getByText(/hello dummy/i); // Use regex for case-insensitive matching
+    const helloElement = screen.getByText(/hello world/i); // Use regex for case-insensitive matching
     expect(helloElement).toBeInTheDocument(); // Assert that the element is in the document
   });
 });

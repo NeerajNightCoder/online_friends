@@ -2,7 +2,7 @@
 import React from "react";
 
 const Hello = () => {
-  return <div>Hello Dummy</div>;
+  return <div>Hello World</div>;
 };
 
 export default Hello;
