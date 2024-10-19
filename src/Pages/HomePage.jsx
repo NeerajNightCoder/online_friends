@@ -13,11 +13,11 @@ const LoginPage = () => {
     setTag(e.target.value);
   };
 
-  const handleGenderChange = (e) => {
-    setGender(e.target.value);
+  const handleGenderChange = (gender) => {
+    setGender(gender);
   };
-  const handlematchWithGenderChange = (e) => {
-    setmatchWithGender(e.target.value);
+  const handlematchWithGenderChange = (gender) => {
+    setmatchWithGender(gender);
   };
 
   const handleStartChat = () => {
@@ -34,49 +34,94 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-8 p-4 bg-white rounded-lg shadow-lg">
-      <div className="mb-4">
-        <input
-          type="text"
-          id="tag"
-          placeholder="Tag to search"
-          value={tag}
-          onChange={handleTagChange}
-          className="w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-        />
+    <div className=" w-full h-1/3 mt-auto p-4 bg-teal-900 text-white  shadow-lg flex flex-col justify-around">
+      <input
+        type="text"
+        id="tag"
+        placeholder="Tag to search"
+        value={tag}
+        onChange={handleTagChange}
+        className="w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+      />
+
+      <div className="">
+        Your Gender
+        <div className="flex justify-around">
+          <button
+            onClick={() => handleGenderChange("male")}
+            className={
+              gender == "male"
+                ? "w-1/4 p-3 rounded-md bg-blue-500 text-white"
+                : "w-1/4 p-3 rounded-md border-2"
+            }
+          >
+            Male
+          </button>
+          <button
+            onClick={() => handleGenderChange("female")}
+            className={
+              gender == "female"
+                ? "w-1/4 p-3 rounded-md bg-pink-500 text-white"
+                : " w-1/4 p-3 rounded-md border-2"
+            }
+          >
+            Female
+          </button>
+          <button
+            onClick={() => handleGenderChange("other")}
+            className={
+              gender == "other"
+                ? "w-1/4 p-3 rounded-md bg-orange-500 text-white"
+                : " w-1/4 p-3 rounded-md border-2"
+            }
+          >
+            Others
+          </button>
+        </div>
       </div>
-      <div className="mb-4">
-        <select
-          id="gender"
-          value={gender}
-          onChange={handleGenderChange}
-          className="w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-        >
-          <option value="">Select Gender</option>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-          <option value="other">Other</option>
-        </select>
-        <select
-          id="matchWithGender"
-          value={matchWithGender}
-          onChange={handlematchWithGenderChange}
-          className="w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-        >
-          <option value="">Find Gender</option>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-          <option value="other">Other</option>
-        </select>
+
+      <div className="">
+        Match With
+        <div className="flex justify-around">
+          <button
+            onClick={() => handlematchWithGenderChange("male")}
+            className={
+              matchWithGender == "male"
+                ? "w-1/4 p-3 rounded-md bg-blue-500 text-white"
+                : "w-1/4 p-3 rounded-md border-2"
+            }
+          >
+            Male
+          </button>
+          <button
+            onClick={() => handlematchWithGenderChange("female")}
+            className={
+              matchWithGender == "female"
+                ? "w-1/4 p-3 rounded-md bg-pink-500 text-white"
+                : " w-1/4 p-3 rounded-md border-2"
+            }
+          >
+            Female
+          </button>
+          <button
+            onClick={() => handlematchWithGenderChange("other")}
+            className={
+              matchWithGender == "other"
+                ? "w-1/4 p-3 rounded-md bg-orange-500 text-white"
+                : " w-1/4 p-3 rounded-md border-2"
+            }
+          >
+            Others
+          </button>
+        </div>
       </div>
-      <div className="flex justify-center">
-        <button
-          onClick={handleStartChat}
-          className="px-4 py-2 bg-blue-500 text-white rounded-lg focus:outline-none"
-        >
-          Start
-        </button>
-      </div>
+
+      <button
+        onClick={handleStartChat}
+        className="px-4 py-2 bg-orange-500 text-white font-bold rounded-lg focus:outline-none"
+      >
+        Start Chat
+      </button>
     </div>
   );
 };
