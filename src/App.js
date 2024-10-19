@@ -18,7 +18,7 @@ function App() {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    const newSocket = io("http://localhost:5000"); // Create socket connection
+    const newSocket = io("https://online-friends-server.onrender.com"); // Create socket connection
     setSocket(newSocket);
 
     newSocket.on("activeUsersCount", (data) => {
